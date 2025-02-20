@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Music ICON - Tycoon</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+	<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<style>
+    tr {
+            --bs-table-striped-bg: rgba(0, 0, 0, 0) !important;
+        }
+        label {
+            padding-bottom: 5px;
+        }
+        td {
+            vertical-align: middle;
+        }
+        body {
+            background-color: #ffffff;
+            color: #333;
+            font-family: "Plus Jakarta Sans", serif;
+        }
+        .profile-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            flex-wrap: wrap;
+            position: relative;
+        }
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%; /* Ensures the picture is always round */
+            border: 5px solid white;
+            margin-right: 20px;
+            object-fit: cover; /* Ensures the image covers the entire area */
+        }
+        .edit-picture-btn {
+            position: absolute;
+            bottom: 120px;
+            left: 130px;
+            background-color: #1DB954;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .edit-picture-btn i {
+            color: white;
+            align-items: center;
+            justify-content: center;
+        }
+        .profile-stats {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            flex-grow: 1;
+        }
+        .profile-stats .stat {
+            margin-bottom: 5px;
+            margin-right: 20px;
+            display: block;
+        }
+        .profile-stats .stat span {
+            font-weight: bold;
+        }
+        .profile-stats .stat {
+            font-size: calc(0.5em + 0.5vw);
+        }
+        .table-container {
+            height: 300px;
+            overflow-y: auto;
+            border: 2px solid gray;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .badge {
+            font-size: 0.9em;
+            margin-right: 5px;
+            margin-bottom: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .profile-stats {
+                justify-content: center;
+                align-items: center;
+            }
+            .profile-stats .stat {
+                margin-right: 0;
+            }
+            .edit-picture-btn {
+                bottom: 10px;
+                left: 110px;
+            }
+        }
+        h2{
+            font-size: 25px;
+            font-weight: bold;
+        }
+        button{
+            margin-right: 5px;
+            margin-bottom: 10px;
+        }
+        .col-md-8{
+            margin-bottom: 10px;
+        }.col-md-4{
+            margin-bottom: 10px;
+        }
+</style>
+	</style>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center">Music ICON - Tycoon</h1>
+        <div id="game-setup" class="text-center">
+            <input type="text" id="artist-name" class="form-control mb-2" placeholder="Entrez votre nom d'artiste">
+            <button id="start-game" class="btn btn-primary">Commencer</button>
+        </div>
+        <div id="game-interface" class="d-none">
+            <div class="profile-container">
+                <img src="path/to/profile-picture.jpg" alt="Profile Picture" class="profile-picture" id="profile-picture">
+                <button class="edit-picture-btn" id="change-picture-btn"><i class="bi bi-pencil-square"></i></button>
+                <div class="profile-stats">
+                    <div class="stat">🎤 Artiste: <span id="artist-display"></span></div>
+                    <div class="stat">💰 Argent: <span id="money">5000</span>€</div>
+                    <div class="stat">🏠 Loyer: <span id="rent">500</span>€</div>
+                    <div class="stat">⚡ Énergie: <span id="energy">100</span></div>
+                    <div class="stat">🌟 Popularité: <span id="popularity">0</span>%</div>
+                    <div class="stat">📅 <span id="game-time">Mois 1, Semaine 1</span></div>
+                </div>
+                </div>
+                <button id="write-song" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#songModal">Écrire un morceau</button>
+                <button id="next-week" class="btn btn-warning">Passer la semaine</button>
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <h2>Morceaux enregistrés</h2>
+                        <div class="table-container" style="height: 200px; overflow-y: auto;">
+                            <table class="table table-striped" id="recorded-songs">
+                                <thead>
+                                    <tr>
+                                        <th>Titre</th>
+                                        <th>Genre</th>
+                                        <th>Stats</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h2>Inventaire des cartes</h2>
+                        <div class="table-container" style="height: 300px; overflow-y: auto;">
+                            <ul id="inventory" class="list-group"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-8">
+                        <h2>Morceaux sortis</h2>
+                        <div class="table-container" style="height: 300px; overflow-y: auto;">
+                            <table class="table table-striped" id="released-songs">
+                                <thead>
+                                    <tr>
+                                        <th>Art</th>
+                                        <th>Titre</th>
+                                        <th>Genre</th>
+                                        <th>Stats</th>
+                                        <th>Streams</th>
+                                        <th>Gains</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="releaseTrackModal" tabindex="-1" aria-labelledby="releaseTrackModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Release Track</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <label for="track-cover">Cover (optional)</label>
+                                <input type="file" id="track-cover" class="form-control mb-2">
+                                <button id="release-track" class="btn btn-primary">Release Track</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+		<div class="modal fade" id="songModal" tabindex="-1" aria-labelledby="songModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Écrire un morceau</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="song-title">Titre du morceau</label>
+                        <input type="text" id="song-title" class="form-control mb-2" placeholder="Entrez le titre du morceau">
+                        <label for="song-genre">Genre du morceau</label>
+                        <select id="song-genre" class="form-select mb-2">
+                            <option>Hip-Hop/Rap</option>
+                            <option>Pop</option>
+                            <option>Rock</option>
+                            <option>Electronic</option>
+                            <option>R&b</option>
+                            <option>Jazz</option>
+                        </select>
+                        <label for="cards-frominv">Cartes à utiliser</label>
+<select id="cards-frominv" class="form-select mb-2" multiple>
+    <option value="No Boost">No Boost</option>
+</select>
+                        <div class="mb-2">
+                            <label>Stats:</label>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <label>Instrumental</label>
+                                    <input type="number" id="instrumental" class="form-control stat-input" value="0" min="0">
+                                </div>
+                                <div>
+                                    <label>Songwriting</label>
+                                    <input type="number" id="songwriting" class="form-control stat-input" value="0" min="0">
+                                </div>
+                                <div>
+                                    <label>Vocals</label>
+                                    <input type="number" id="vocals" class="form-control stat-input" value="0" min="0">
+                                </div>
+                                <div>
+                                    <label>Originalité</label>
+                                    <input type="number" id="originality" class="form-control stat-input" value="0" min="0">
+                                </div>
+                                <div>
+                                    <label>Viralité</label>
+                                    <input type="number" id="virality" class="form-control stat-input" value="0" min="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label>Coût total en énergie: <span id="energy-cost">10</span></label>
+                        </div>
+                        <button id="save-song" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="changePictureModal" tabindex="-1" aria-labelledby="changePictureModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="changePictureModalLabel">Changer l'image de profil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <button id="delete-picture" class="btn btn-danger mb-2">Supprimer l'image</button>
+                        <input type="file" id="upload-picture" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+		<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="messageModalLabel">Message</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body" id="messageModalBody">
+						<!-- Message content will be inserted here -->
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+		
+		let money = 5000;
+let energy = 100;
+let rent = 500;
+let week = 1;
+let month = 1;
+let popularity = 0;
+let songs = [];
+let releasedSongs = [];
+let inventory = [];
+let cards = ["Originality (+1)", "Instrumental (+1)", "Songwriting (+1)", "Vocals (+1)", "Virality (+1)"];
+
+document.getElementById("start-game").addEventListener("click", function() {
+    document.getElementById("artist-display").textContent = document.getElementById("artist-name").value;
+    document.getElementById("game-setup").classList.add("d-none");
+    document.getElementById("game-interface").classList.remove("d-none");
+    updateEnergyCost();
+});
+
+function showMessage(message) {
+    // Close any other active modals
+    let modals = document.querySelectorAll('.modal.show');
+    modals.forEach(modal => {
+        let modalInstance = bootstrap.Modal.getInstance(modal);
+        modalInstance.hide();
+    });
+    // Show the message modal
+    document.getElementById("messageModalBody").textContent = message;
+    let messageModal = new bootstrap.Modal(document.getElementById("messageModal"));
+    messageModal.show();
+}
+
+document.getElementById("cards-frominv").addEventListener("change", function() {
+    let selectedOptions = Array.from(this.selectedOptions).map(option => option.value);
+    if (selectedOptions.includes("No Boost") && selectedOptions.length > 1) {
+        // Deselect all other options if "No Boost" is selected
+        this.value = "No Boost";
+    } else if (selectedOptions.length > 1 && selectedOptions.includes("No Boost")) {
+        // Deselect "No Boost" if any other option is selected
+        this.querySelector('option[value="No Boost"]').selected = false;
+    }
+});
+
+document.getElementById("save-song").addEventListener("click", function() {
+    let title = document.getElementById("song-title").value;
+    let genre = document.getElementById("song-genre").value;
+    let selectedCards = Array.from(document.getElementById("cards-frominv").selectedOptions).map(option => option.value);
+    let originality = Math.max(0, parseInt(document.getElementById("originality").value));
+    let instrumental = Math.max(0, parseInt(document.getElementById("instrumental").value));
+    let songwriting = Math.max(0, parseInt(document.getElementById("songwriting").value));
+    let vocals = Math.max(0, parseInt(document.getElementById("vocals").value));
+    let virality = Math.max(0, parseInt(document.getElementById("virality").value));
+
+    let totalBoosts = originality + instrumental + songwriting + vocals + virality;
+    let energyCost = totalBoosts * 20 + 10; // Adding 10 energy cost for creating the song
+
+    if (title && energy >= energyCost) {
+        // Check for duplicate song titles
+        if (songs.some(song => song.title === title)) {
+            showMessage("Un morceau avec ce titre existe déjà. Veuillez choisir un autre titre.");
+            return;
+        }
+
+        // Apply boost card effects
+        selectedCards.forEach(selectedCard => {
+            if (selectedCard !== "No Boost") {
+                switch (selectedCard) {
+                    case "Originality (+1)":
+                        originality += 1;
+                        break;
+                    case "Instrumental (+1)":
+                        instrumental += 1;
+                        break;
+                    case "Songwriting (+1)":
+                        songwriting += 1;
+                        break;
+                    case "Vocals (+1)":
+                        vocals += 1;
+                        break;
+                    case "Virality (+1)":
+                        virality += 1;
+                        break;    
+                }
+                // Remove the used card from inventory
+                inventory = inventory.filter(card => card !== selectedCard);
+            }
+        });
+        updateInventory();
+
+        let newSong = {
+            title,
+            genre,
+            cards: selectedCards,
+            instrumental,
+            songwriting,
+            vocals,
+            originality,
+            virality
+        };
+        songs.push(newSong);
+        updateSongsTable();
+        energy -= energyCost;
+        updateStats();
+        updateEnergyCost();
+    } else if (energy < energyCost) {
+        showMessage("Vous n'avez pas assez d'énergie pour enregistrer un morceau.");
+    }
+});
+
+document.querySelectorAll('.stat-input').forEach(input => {
+    input.addEventListener('input', function() {
+        updateEnergyCost();
+    });
+});
+
+function updateSongsTable() {
+    let tbody = document.querySelector("#recorded-songs tbody");
+    tbody.innerHTML = "";
+    songs.forEach((song, index) => {
+        let row = `<tr>
+            <td>${song.title}</td>
+            <td>${song.genre}</td>
+            <td>
+                <span class="badge bg-secondary">Instrumental: ${Math.max(0, song.instrumental)}</span>
+                <span class="badge bg-success">Songwriting: ${Math.max(0, song.songwriting)}</span>
+                <span class="badge bg-danger">Vocals: ${Math.max(0, song.vocals)}</span>
+                <span class="badge bg-primary">Originalité: ${Math.max(0, song.originality)}</span>
+                <span class="badge bg-info">Viralité: ${Math.max(0, song.virality)}</span>
+            </td>
+            <td>
+                <button class='btn btn-danger' onclick='deleteSong(${index})'>Supprimer</button>
+                <button class='btn btn-primary' onclick='openReleaseTrackModal(${index})'>Release Track</button>
+            </td>
+        </tr>`;
+        tbody.innerHTML += row;
+    });
+}
+
+function deleteSong(index) {
+    songs.splice(index, 1);
+    updateSongsTable();
+}
+
+function openReleaseTrackModal(index) {
+    let releaseTrackModal = new bootstrap.Modal(document.getElementById("releaseTrackModal"));
+    document.getElementById("release-track").onclick = function() {
+        releaseTrack(index);
+        releaseTrackModal.hide();
+    };
+    releaseTrackModal.show();
+}
+
+function releaseTrack(index) {
+    let song = songs[index];
+    let cover = document.getElementById("track-cover").files[0];
+    let coverUrl = cover ? URL.createObjectURL(cover) : "path/to/default-cover.jpg";
+    let totalStats = song.instrumental + song.songwriting + song.vocals + song.originality + song.virality;
+    let energyCost = totalStats * 50;
+    let moneyCost = 50;
+
+    if (energy >= energyCost && money >= moneyCost) {
+        energy -= energyCost;
+        money -= moneyCost;
+        let initialStreams = Math.floor(Math.random() * 5) + totalStats * 2 + Math.floor(virality * 3) + Math.floor(popularity * 0.1);
+        let newReleasedSong = {
+            ...song,
+            cover: coverUrl,
+            weeklyStreams: initialStreams,
+            totalStreams: initialStreams,
+            weeklyGains: 0,
+            totalGains: 0
+        };
+        releasedSongs.push(newReleasedSong);
+        songs.splice(index, 1); // Remove the song from the songs array
+        updateReleasedSongsTable();
+        updateSongsTable(); // Update the "Morceaux enregistrés" table
+        updateStats();
+    } else {
+        showMessage("Vous n'avez pas assez d'énergie ou d'argent pour sortir ce morceau.");
+    }
+}
+
+function updateReleasedSongsTable() {
+    let tbody = document.querySelector("#released-songs tbody");
+    tbody.innerHTML = "";
+    releasedSongs.forEach((song, index) => {
+        let row = `<tr>
+            <td><img src="${song.cover}" alt="Cover" style="width: 50px; height: 50px;"></td>
+            <td>${song.title}</td>
+            <td>${song.genre}</td>
+            <td>
+                <span class="badge bg-secondary">Instrumental: ${Math.max(0, song.instrumental)}</span>
+                <span class="badge bg-success">Songwriting: ${Math.max(0, song.songwriting)}</span>
+                <span class="badge bg-danger">Vocals: ${Math.max(0, song.vocals)}</span>
+                <span class="badge bg-primary">Originalité: ${Math.max(0, song.originality)}</span>
+                <span class="badge bg-info">Viralité: ${Math.max(0, song.virality)}</span>
+            </td>
+            <td>Weekly: ${song.weeklyStreams}<br>Total: ${song.totalStreams}</td>
+            <td>Weekly: ${(song.weeklyStreams * 0.001).toFixed(2)}€<br>Total: ${(song.totalGains).toFixed(2)}€</td>
+        </tr>`;
+        tbody.innerHTML += row;
+    });
+}
+
+document.getElementById("next-week").addEventListener("click", function() {
+    week++;
+    energy = 100;
+    if (week > 4) {
+        week = 1;
+        month++;
+        money -= rent;
+        if (money < 0) {
+            showMessage("Vous n'avez pas assez d'argent pour payer les dépenses mensuelles.");
+            money = 0;
+        }
+    }
+    releasedSongs.forEach(song => {
+        let decayFactor = 0.9; // Streams decrease by 10% each week
+        song.weeklyStreams = Math.floor(song.weeklyStreams * decayFactor);
+        song.totalStreams += song.weeklyStreams;
+        song.weeklyGains = song.weeklyStreams * 0.001;
+        song.totalGains += song.weeklyGains;
+        money += song.weeklyGains;
+    });
+    // Chance to get a new card each week
+    if (Math.random() < 0.5) {
+        let newCard = cards[Math.floor(Math.random() * cards.length)];
+        inventory.push(newCard);
+        updateInventory();
+        showMessage("Vous avez obtenu une nouvelle carte: " + newCard);
+    }
+    updateReleasedSongsTable();
+    updateStats();
+    updateEnergyCost();
+    updatePopularity();
+});
+
+function updateInventory() {
+    const inventoryElement = document.getElementById("inventory");
+    inventoryElement.innerHTML = inventory.map(card => `<li class='list-group-item'>${card}</li>`).join("");
+    const cardsFromInvElement = document.getElementById("cards-frominv");
+    let options = "<option value='No Boost'>No Boost</option>";
+    if (inventory.length > 0) {
+        options += inventory.map(card => `<option value="${card}">${card}</option>`).join("");
+    } else {
+        options += "<option>Aucune carte disponible</option>";
+    }
+    cardsFromInvElement.innerHTML = options;
+}
+
+function updateStats() {
+    document.getElementById("money").textContent = money;
+    document.getElementById("energy").textContent = energy;
+    document.getElementById("game-time").textContent = `Mois ${month}, Semaine ${week}`;
+    document.getElementById("popularity").textContent = popularity.toFixed(1);
+}
+
+function updateEnergyCost() {
+    let totalBoosts = 0;
+    document.querySelectorAll('.stat-input').forEach(input => {
+        totalBoosts += Math.max(0, parseInt(input.value));
+    });
+    let energyCost = totalBoosts * 20 + 10; // Adding 10 energy cost for creating the song
+    document.getElementById("energy-cost").textContent = energyCost;
+}
+
+function updatePopularity() {
+    let totalStreams = releasedSongs.reduce((sum, song) => sum + song.totalStreams, 0);
+    popularity = totalStreams / 2000; // Each 2000 streams increase popularity by 1
+    updateStats();
+}
+
+document.getElementById("change-picture-btn").addEventListener("click", function() {
+    let changePictureModal = new bootstrap.Modal(document.getElementById("changePictureModal"));
+    changePictureModal.show();
+});
+
+document.getElementById("delete-picture").addEventListener("click", function() {
+    document.getElementById("profile-picture").src = "path/to/default-picture.jpg"; // Set to a default picture
+    let changePictureModal = bootstrap.Modal.getInstance(document.getElementById("changePictureModal"));
+    changePictureModal.hide();
+});
+
+document.getElementById("upload-picture").addEventListener("change", function(event) {
+    let file = event.target.files[0];
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById("profile-picture").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        let changePictureModal = bootstrap.Modal.getInstance(document.getElementById("changePictureModal"));
+        changePictureModal.hide();
+    }
+});
+		</script>
+</body>
+
+</html>
